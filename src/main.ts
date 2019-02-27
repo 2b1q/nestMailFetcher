@@ -19,13 +19,8 @@ async function bootstrap() {
   });
 
   // WakeUP service
-  app
-    .listenAsync()
-    .then(() => {
-      Logger.warn(`Redis RPC Microservice is hooked up to ${url}`, 'Bootstrap');
-    })
-    .catch(e => {
-      Logger.error(e, '', 'Bootstrap');
-    });
+  app.listenAsync().then(() => {
+    Logger.warn(`Redis RPC Microservice is hooked up to ${url}`, 'Bootstrap');
+  });
 }
 bootstrap();

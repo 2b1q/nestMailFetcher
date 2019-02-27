@@ -26,9 +26,9 @@
 **nestGmailFetcher** is microservice APP for education purpose based on [Nest](https://github.com/nestjs/nest) framework.
 
 ## Project Timeline
-- &#9745; init
+- &#9745; init microservice
+- &#9745; RPC between microservices
 - &#9744; mail fetcher microservice
-- &#9744; RPC between microservices
 - &#9744; GMAIL google API pub/sub message handler
 
 ## Installation
