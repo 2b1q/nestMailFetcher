@@ -3,22 +3,29 @@ import { AppModule } from './app.module';
 import { Transport } from '@nestjs/common/enums/transport.enum';
 import { Logger } from '@nestjs/common';
 
+const url = 'redis://localhost:6379';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  /**
+   * basic microservice with NestFactory.createMicroservice():
+   */
+  const app = await NestFactory.createMicroservice(AppModule, {
     transport: Transport.REDIS,
     options: {
-      url: 'redis://localhost:6379',
+      url,
+      retryAttempts: 5,
+      retryDelay: 3000,
     },
   });
-  // Logger.log('Microservice is listening', 'Bootstrap');
-  // app.listen(() => console.log('Microservice is listening'));
 
-  // await app.listen();
-  // app
-  //   .listen(5555)
-  //   .then(() => {
-  //     Logger.log(`Microservice is listening `, 'Bootstrap');
-  //   })
-  //   .catch(e => Logger.error(e, '', 'bootstrap'));
+  // WakeUP service
+  app
+    .listenAsync()
+    .then(() => {
+      Logger.warn(`Redis RPC Microservice is hooked up to ${url}`, 'Bootstrap');
+    })
+    .catch(e => {
+      Logger.error(e, '', 'Bootstrap');
+    });
 }
 bootstrap();
