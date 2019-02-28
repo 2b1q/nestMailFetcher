@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { Transport } from '@nestjs/common/enums/transport.enum';
 import { Logger } from '@nestjs/common';
 
-const url = 'redis://localhost:6379';
+const url = process.env.REDISURL || 'redis://localhost:6379';
 
 async function bootstrap() {
   /**
@@ -19,8 +19,10 @@ async function bootstrap() {
   });
 
   // WakeUP service
-  app.listenAsync().then(() => {
-    Logger.warn(`Redis RPC Microservice is hooked up to ${url}`, 'Bootstrap');
-  });
+  app
+    .listenAsync()
+    .then(() =>
+      Logger.warn(`Redis RPC Microservice is hooked up to ${url}`, 'Bootstrap'),
+    );
 }
 bootstrap();

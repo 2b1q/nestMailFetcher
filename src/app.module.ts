@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { RpcController } from './rpcController';
+import { RpcClientService } from './rpc-client.service';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [RpcController],
+  providers: [RpcClientService],
 })
 export class AppModule {}
