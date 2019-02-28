@@ -6,8 +6,8 @@ export class RpcController {
   // Handle RPC cmd: 'ping'
   @MessagePattern({ cmd: 'ping' })
   ping(data: any) {
-    Logger.warn(
-      `got cmd ping with data ${JSON.stringify(data)}`,
+    Logger.log(
+      `got cmd ping with data\n${JSON.stringify(data)}`,
       `AppController`,
     );
   }
