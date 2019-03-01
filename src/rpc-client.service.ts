@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Client, ClientProxy, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { ServiceInteraction } from './shared/ipc';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class RpcClientService implements OnModuleInit {
@@ -19,11 +20,11 @@ export class RpcClientService implements OnModuleInit {
   private counter: number = 0;
 
   // Msg RPC msg wrapper
-  private emit() {
+  private emit(payload: any) {
     // construct data payload
     const data = {
       fromService: 'nestMail.fetcher.RpcClientService',
-      payload: this.counter,
+      payload: payload || this.counter,
     };
     // add RPC msg pattern
     const pattern = { cmd: 'pong' };
@@ -55,19 +56,33 @@ export class RpcClientService implements OnModuleInit {
     );
 
     // emit RPC msg every 2000ms
-    setInterval(() => this.emit(), 2000);
+    // setInterval(() => this.emit(), 2000);
 
     //  subscribe to events from pulseService trough serviceInteraction event Observable
-    this.serviceInteraction.$event.subscribe(
-      next => this.logger.log(`$===> stream 2data from pulseService: ${next}`),
-      error =>
-        this.logger.error(
-          error,
-          '',
-          'RpcClientService => onModuleInit => serviceInteraction.event.subscribe',
+    this.serviceInteraction.$event
+      .pipe(
+        map((value, index) =>
+          Object({
+            msg: 'HeartBeat pulse',
+            from: 'nestMail.fetcher.RpcClientService',
+            streamValue: value,
+            mapIndex: index,
+          }),
         ),
-      () => {},
-    );
+      )
+      .subscribe(
+        next => {
+          this.logger.log(`$stream data from pulseService`);
+          this.emit(next);
+        },
+        error =>
+          this.logger.error(
+            error,
+            '',
+            'RpcClientService => onModuleInit => serviceInteraction.event.subscribe',
+          ),
+        () => {},
+      );
   }
 
   // RPC message sender wrapper (with Promise)
