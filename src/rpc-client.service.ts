@@ -59,7 +59,7 @@ export class RpcClientService implements OnModuleInit {
 
     //  subscribe to events from pulseService trough serviceInteraction event Observable
     this.serviceInteraction.$event.subscribe(
-      next => this.logger.log(`data from pulseService: ${next}`),
+      next => this.logger.log(`$===> stream data from pulseService: ${next}`),
       error =>
         this.logger.error(
           error,

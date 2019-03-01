@@ -7,7 +7,11 @@ export class PulseService implements OnModuleInit {
   constructor(private serviceInteraction: ServiceInteraction) {}
 
   onModuleInit() {
-    Logger.warn(`initialized`, `PulseService`);
-    this.serviceInteraction.$event = interval(1000);
+    const period: number = 4000;
+    Logger.warn(
+      `Observable interval.$stream initialized with period ${period}`,
+      `PulseService`,
+    );
+    this.serviceInteraction.$event = interval(period);
   }
 }
