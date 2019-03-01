@@ -1,9 +1,13 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Client, ClientProxy, Transport } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { ServiceInteraction } from './shared/ipc';
 
 @Injectable()
 export class RpcClientService implements OnModuleInit {
+  // inject serviceInteraction dependencies
+  constructor(private serviceInteraction: ServiceInteraction) {}
+
   // add RPC transport client
   @Client({ transport: Transport.REDIS })
   client: ClientProxy;
@@ -52,6 +56,18 @@ export class RpcClientService implements OnModuleInit {
 
     // emit RPC msg every 2000ms
     setInterval(() => this.emit(), 2000);
+
+    //  subscribe to events from pulseService trough serviceInteraction event Observable
+    this.serviceInteraction.$event.subscribe(
+      next => this.logger.log(`data from pulseService: ${next}`),
+      error =>
+        this.logger.error(
+          error,
+          '',
+          'RpcClientService => onModuleInit => serviceInteraction.event.subscribe',
+        ),
+      () => {},
+    );
   }
 
   // RPC message sender wrapper (with Promise)
